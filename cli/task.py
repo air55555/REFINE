@@ -92,7 +92,7 @@ if __name__ == '__main__':
         'solver': 'admm',
         'device': 'cuda',
         'params': {
-            'iter': 24,
+            'iter': 2,
             'sigma1': 30,
             'sigma2': 15,
             'w': 1,

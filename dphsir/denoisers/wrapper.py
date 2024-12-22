@@ -180,7 +180,7 @@ class GRUNetDenoiser(Denoiser):
     def __init__(self, model_path):
         from .models.qrnn import grunet_masked_nobn
         model = grunet_masked_nobn()
-        checkpoint = torch.load(model_path)
+        checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
         model.load_state_dict(checkpoint['net'])
         model.eval()
         for _, v in model.named_parameters():
