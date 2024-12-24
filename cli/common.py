@@ -13,7 +13,7 @@ from dphsir.solvers import callbacks
 from dphsir.solvers.params import admm_log_descent
 from dphsir.metrics import mpsnr, mssim, sam, ergas
 from dphsir.utils.io import loadmat
-
+from utils import *
 
 def get_denoiser(cfg):
     if cfg.type.startswith('qrnn3d'):
@@ -96,6 +96,8 @@ def restore(task, cfg):
     def run(input_path, output_path):
         data = loadmat(input_path)
         gt = data['gt'].astype(np.float32)
+        #one time run to save lehavim as envi
+        #save_hsi_as(gt, "../../hsi_cheese/lehavim.hdr")
         input, init, solver = task(gt, device, cfg)
 
         print('GT:', gt.shape)
