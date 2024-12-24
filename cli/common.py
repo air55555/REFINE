@@ -51,7 +51,7 @@ def get_params(cfg):
 def format(d): return ' '.join(['{}: {:.4f}'.format(k, v) for k, v in d.items()])
 
 
-def show_results(input, pred, gt, output_path=None):
+def show_results(input, pred, gt, lowres,output_path=None, ):
     input = input.astype('float32')
     pred = pred.astype('float32')
     gt = gt.astype('float32')
@@ -62,7 +62,7 @@ def show_results(input, pred, gt, output_path=None):
     print('Before |', format(eval(input, gt)))
     print(' After |', format(eval(pred, gt)))
 
-    VISUAL_CHANNEL = 20
+    VISUAL_CHANNEL = 9
     def hsi2rgb(x): return x[:, :, VISUAL_CHANNEL]
     CMAP = 'gray'
     if output_path:
@@ -75,6 +75,7 @@ def show_results(input, pred, gt, output_path=None):
         else:
             os.makedirs(output_path, exist_ok=True)
             plt.imsave(output_path/'input.png', hsi2rgb(input), cmap=CMAP)
+            plt.imsave(output_path/'lowres.png', hsi2rgb(lowres), cmap=CMAP)
             plt.imsave(output_path/'gt.png', hsi2rgb(gt), cmap=CMAP)
             plt.imsave(output_path/'pred.png', hsi2rgb(pred), cmap=CMAP)
     else:
@@ -104,7 +105,7 @@ def restore(task, cfg):
         pred = solver.restore(input, iter_num=iter, rhos=rhos, sigmas=sigmas,
                               callbacks=[callbacks.ProgressBar(iter)])
 
-        return show_results(init, pred, gt, output_path)
+        return show_results(init, pred, gt, input, output_path)
 
     if os.path.isdir(cfg.input_path):
         paths = list(Path(cfg.input_path).glob('*.mat'))

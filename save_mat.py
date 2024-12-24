@@ -21,14 +21,14 @@ def envi_to_matlab(envi_file, mat_file=None):
     # Save the array as a MATLAB .mat file with the variable name 'gt'
     base, ext = os.path.splitext(envi_file)
     if not mat_file:
-        output_file_path = f"{base}.mat"
-    savemat(output_file_path, {'gt': array})
+        mat_file = f"{base}.mat"
+    savemat(mat_file, {'gt': array})
 
     print(f"ENVI file '{envi_file}' successfully saved as MATLAB file '{mat_file}'.")
 
 
 # Example usage
-envi_file = r'C:\Users\1\PycharmProjects\DPHSIRmy\input\WHITEREF_2024-09-13_08-04-13_white_circ_t_cropped.hdr'
+envi_file = r'C:\Users\1\PycharmProjects\DPHSIRmy\input\64_10_circ_t_cropped.hdr'
 # Path to the ENVI file
 mat_file = "output_data.mat"  # Path to the MATLAB .mat file
 envi_to_matlab(envi_file)
