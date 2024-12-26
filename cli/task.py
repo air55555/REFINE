@@ -23,7 +23,7 @@ def deblur(gt, device, cfg):
 def sisr(gt, device, cfg):
     import dphsir.solvers.fns.sisr as task
     from dphsir.degrades import GaussianDownsample
-    sf = 2
+    sf = cfg.sf
     downsample = GaussianDownsample(sf=sf)
     low = downsample(gt)
     init = partial(task.inits.interpolate, sf=sf, enable_shift_pixel=True)
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         'solver': 'admm',
         'device': 'cuda',
         'params': {
-            'iter': 2,
+            'iter': 24,
             'sigma1': 30,
             'sigma2': 15,
             'w': 1,

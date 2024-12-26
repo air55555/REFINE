@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import yaml
+import spectral
+
 
 from dphsir.denoisers import (FFDNet3DDenoiser, FFDNetDenoiser, QRNN3DDenoiser,
                               TVDenoiser, GRUNetDenoiser, IRCNNDenoiser,
@@ -78,6 +80,9 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
             plt.imsave(output_path/'lowres.png', hsi2rgb(lowres), cmap=CMAP)
             plt.imsave(output_path/'gt.png', hsi2rgb(gt), cmap=CMAP)
             plt.imsave(output_path/'pred.png', hsi2rgb(pred), cmap=CMAP)
+            spectral.envi.save_image(output_path/'input.hdr', input, dtype='float32', force=True)
+            spectral.envi.save_image(output_path / 'pred.hdr', pred, dtype='float32', force=True)
+
     else:
         img = [hsi2rgb(i) for i in [input, pred, gt]]
         plt.imshow(np.hstack(img), cmap=CMAP)

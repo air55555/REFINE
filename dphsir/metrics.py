@@ -20,7 +20,7 @@ def psnr(output, target, data_range=1):
 
 
 def ssim(img1, img2, **kwargs):
-    return structural_similarity(img1, img2,  data_range =1.0 ,**kwargs)#channel_axis=2,
+    return structural_similarity(img1, img2, channel_axis=2, data_range= 1.0 ,**kwargs)
 
 
 def sam(img1, img2, eps=1e-8):
@@ -67,6 +67,7 @@ def mpsnr(output, target, data_range=1):
 
 
 def mssim(img1, img2, **kwargs):
+
     return ssim(img1, img2, **kwargs)
 
 
