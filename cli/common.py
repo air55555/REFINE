@@ -56,6 +56,9 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     pred = pred.astype('float32')
     gt = gt.astype('float32')
 
+    #in case for misr use only part of task.run return
+    if isinstance(lowres, tuple): lowres=lowres[0]
+
     metrics = [mpsnr, mssim, sam, ergas]
     def eval(inp, gt): return {m.__name__: m(inp, gt) for m in metrics}
     print('-----------------------------------------------------')
