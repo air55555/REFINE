@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
+
 import torch
 import yaml
 import spectral
@@ -61,12 +61,6 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     #in case for misr use only part of task.run return
     if isinstance(lowres, tuple): lowres=lowres[0]
 
-    metrics = [mpsnr, mssim, sam, ergas]
-    def eval(inp, gt): return {m.__name__: m(inp, gt) for m in metrics}
-    print('-----------------------------------------------------')
-    print('Before |', format(eval(input, gt)))
-    print(' After |', format(eval(pred, gt)))
-
     VISUAL_CHANNEL = 9
     def hsi2rgb(x): return x[:, :, VISUAL_CHANNEL]
     CMAP = 'gray'
@@ -90,7 +84,14 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
         img = [hsi2rgb(i) for i in [input, pred, gt]]
         plt.imshow(np.hstack(img), cmap=CMAP)
         plt.show()
+    metrics = [mpsnr, mssim, sam, ergas]
 
+    def eval(inp, gt):
+        return {m.__name__: m(inp, gt) for m in metrics}
+
+    print('-----------------------------------------------------')
+    print('Before |', format(eval(input, gt)))
+    print(' After |', format(eval(pred, gt)))
     return eval(pred, gt)
 
 
@@ -106,15 +107,23 @@ def restore(task, cfg):
         gt = data['gt'].astype(np.float32)
         #one time run to save lehavim as envi
         #save_hsi_as(gt, "../../hsi_cheese/lehavim.hdr")
+
+        if cfg.t == 'no_gt':
+            gt_safe = gt
+            gt = super_resolve_hsi(gt,cfg.sf)
         input, init, solver = task(gt, device, cfg)
 
         print('GT:', gt.shape)
 
         rhos, sigmas = get_params(cfg.params)
         iter = len(rhos)
+        #real task - sr without gt  dont know what to find out
+        #if cfg.t =='no_gt' : input = gt_safe
+
         pred = solver.restore(input, iter_num=iter, rhos=rhos, sigmas=sigmas,
                               callbacks=[callbacks.ProgressBar(iter)])
-
+        if cfg.t == 'no_gt':
+            input = restore_hsi(gt,cfg.sf)
         return show_results(init, pred, gt, input, output_path)
 
     if os.path.isdir(cfg.input_path):

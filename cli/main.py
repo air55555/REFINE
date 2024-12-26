@@ -20,13 +20,14 @@ def add_options(options):
 @click.option('-i', '--input_path', required=True, help='Path to input image/directory.')
 @click.option('-o', '--output_path', default='tmp', help='Path to output image/directory.')
 @click.option('-d', '--denoiser', default='grunet', help='Denoiser type.')
-@click.option('-dp', '--denoiser_path', default=r'D:\PycharmProjects\DPHSIRmy\models\grunet.pth', help='Path to denoiser model.')
+@click.option('-dp', '--denoiser_path', default=r'..\models\grunet.pth', help='Path to denoiser model.')
 @click.option('-s', '--solver', type=click.Choice(['admm', 'hqs']), default='admm', help='Solver type.')
 @click.option('-sf', type=int, default=2, help='scaling factor (nor requared) ')
+@click.option('-t',  default='with_gt', help='Type of infer - with gt or no_gt - real superres task ')
 
 @click.option('--device', default='cuda', help='Device to use.')
 @click.pass_context
-def cli(ctx, input_path, output_path, denoiser, denoiser_path, solver, device,sf):
+def cli(ctx, input_path, output_path, denoiser, denoiser_path, solver, device, sf, t):
     ctx.ensure_object(dict)
     ctx.obj['input_path'] = input_path
     ctx.obj['output_path'] = output_path
@@ -37,6 +38,7 @@ def cli(ctx, input_path, output_path, denoiser, denoiser_path, solver, device,sf
     ctx.obj['solver'] = solver
     ctx.obj['device'] = device
     ctx.obj['sf'] = sf
+    ctx.obj['t'] = t
 
 
 def run(task, ctx, iter, sigma, w, lam):
@@ -90,4 +92,5 @@ def misr(ctx, iter, sigma, w, lam):
 
 
 if __name__ == '__main__':
+
     cli(obj={})
