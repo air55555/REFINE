@@ -89,9 +89,14 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     def eval(inp, gt):
         return {m.__name__: m(inp, gt) for m in metrics}
 
+    before_eval = eval(input, gt)
+    after_eval = eval(pred, gt)
     print('-----------------------------------------------------')
-    print('Before |', format(eval(input, gt)))
-    print(' After |', format(eval(pred, gt)))
+    print('Before |', format(before_eval))
+    print(' After |', format(after_eval))
+    with open(r'..\log.txt', "a") as file:
+        file.write(f'Before | {before_eval}\n')
+        file.write(f' After | {after_eval}\n')
     return eval(pred, gt)
 
 
@@ -99,6 +104,10 @@ def restore(task, cfg):
     print('-----------------------------------------------------')
     yaml.emitter.Emitter.prepare_tag = lambda self, tag: ''
     print(yaml.dump(cfg), end='')
+    with open(r'..\log.txt', "a") as file:
+        file.write("***************\n")  # Optional: Add a newline between runs
+        yaml.dump(cfg, file, default_flow_style=False)
+
     print('-----------------------------------------------------')
     device = torch.device(cfg.device)
 

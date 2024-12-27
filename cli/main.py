@@ -3,6 +3,7 @@ import munch
 
 import task
 import os
+from datetime import datetime
 from common import restore
 gpu_id ="2"
 os.environ['CUDA_VISIBLE_DEVICES'] = gpu_id
@@ -49,6 +50,8 @@ def run(task, ctx, iter, sigma, w, lam):
         'w': w,
         'lam': lam
     }
+    if ctx.obj['output_path'] == 'timestamp': ctx.obj['output_path'] = datetime.now().strftime("%m%d_%H-%M-%S")
+
     cfg = munch.munchify(ctx.obj)
     restore(task, cfg)
 
