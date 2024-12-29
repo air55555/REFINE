@@ -44,6 +44,7 @@ def cli(ctx, input_path, output_path, denoiser, denoiser_path, solver, device, s
 
 def run(task, ctx, iter, sigma, w, lam):
     ctx.obj['params'] = {
+
         'iter': iter,
         'sigma1': sigma[0],
         'sigma2': sigma[1],

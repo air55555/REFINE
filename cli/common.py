@@ -106,6 +106,7 @@ def restore(task, cfg):
     print(yaml.dump(cfg), end='')
     with open(r'..\log.txt', "a") as file:
         file.write("***************\n")  # Optional: Add a newline between runs
+        file.write(f'task: {task}') # write task=command special way
         yaml.dump(cfg, file, default_flow_style=False)
 
     print('-----------------------------------------------------')

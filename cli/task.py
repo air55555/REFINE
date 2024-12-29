@@ -67,7 +67,7 @@ def misr(gt, device, cfg):
     import dphsir.solvers.fns.sisr as sisr
     from dphsir.degrades import (HSI2RGB, BiCubicDownsample,
                                  GaussianDownsample, UniformDownsample)
-    sf = 2
+    sf = cfg.sf
     spa_down = GaussianDownsample(sf=sf)
     spe_down = HSI2RGB()
     low = spa_down(gt)
