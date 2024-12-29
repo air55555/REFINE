@@ -128,11 +128,14 @@ def restore(task, cfg):
         iter = len(rhos)
         #real task - sr without gt  dont know what to find out
         #if cfg.t =='no_gt' : input = gt_safe
-
+        pb = callbacks.ProgressBar(iter)
         pred = solver.restore(input, iter_num=iter, rhos=rhos, sigmas=sigmas,
-                              callbacks=[callbacks.ProgressBar(iter)])
-        if cfg.t == 'no_gt':
-            input = restore_hsi(gt,cfg.sf)
+                              callbacks=[pb])
+        #write totals to log etc.
+        pb.close()
+
+        #if cfg.t == 'no_gt':
+        #    input = restore_hsi(gt,cfg.sf)
         return show_results(init, pred, gt, input, output_path)
 
     if os.path.isdir(cfg.input_path):
