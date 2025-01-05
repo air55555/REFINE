@@ -37,19 +37,19 @@ if __name__ == "__main__":
     # Paths to Python scripts
     script_paths = [
         "C:/Users/1/PycharmProjects/DPHSIRmy/cli/main.py",  # Replace with your script filenames
-        "C:/Users/1/PycharmProjects/DPHSIRmy/cli/main.py"
+        #"C:/Users/1/PycharmProjects/DPHSIRmy/cli/main.py",
     ]
-
-
     # Common parameters for all scripts
-    base_params = r"-o timestamp -i C:\Users\1\PycharmProjects\DPHSIRmy\input\white_circ64,64,10)_cropped.mat -t no_gt --device cpu "
+    base_params = r"-o timestamp -i C:\Users\1\PycharmProjects\DPHSIRmy\input" \
+                  r"\white_circ64,64,10)_cropped.mat -t no_gt --device cpu "
+    base_params = r"-o timestamp -i C:\Users\1\PycharmProjects\DPHSIRmy\input" \
+                  r"\31bands_(512,512,31)_downsampled_sf8.mat" \
+                  r" -t no_gt --device cpu "
 
     # Parameter variants
     param_variants = [
         {"sf": 2, "sisr": "sisr" , "it": 1 },
-
         {"sf": 2, "misr": "misr" , "it": 1 },
-        {"i": r"C:\Users\1\PycharmProjects\DPHSIRmy\input\white_circ64,64,20)_cropped.mat", "sf": 4},
     ]
     with open(r'..\log.txt', "a") as file:
         batch = datetime.now().strftime("%y%m%d_%H-%M-%S")

@@ -120,11 +120,9 @@ def restore(task, cfg):
 
         if cfg.t == 'no_gt':
             gt_safe = gt
-            gt = super_resolve_hsi(gt,cfg.sf)
+            gt = super_resolve_hsi(gt_safe,cfg.sf)
         input, init, solver = task(gt, device, cfg)
-
         print('GT:', gt.shape)
-
         rhos, sigmas = get_params(cfg.params)
         iter = len(rhos)
         #real task - sr without gt  dont know what to find out
