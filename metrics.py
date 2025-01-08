@@ -104,6 +104,25 @@ def main():
                     f.write(csv)
                     f.close()
 
-        
+def calc_metrics(hsi,sri):
+    """
+    hsi - initial , sri - improved image ( sr, denoised , etc)
+    return np.array
+    """
+    metrics = [
+        rmse(hsi, sri) * 100,
+        psnr(hsi, sri, MAX=1.0),
+        psnrb(hsi, sri),
+        ssim(hsi, sri, MAX=1.0)[0],
+        float(msssim(hsi, sri, MAX=1.0)),
+        uqi(hsi, sri),
+        ergas(hsi, sri),
+        scc(hsi, sri),
+        rase(hsi, sri),
+        sam(hsi, sri),
+        vifp(hsi, sri),
+    ]
+    return  np.array(metrics)
+
 if __name__ == "__main__":
     main()

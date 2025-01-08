@@ -2,7 +2,28 @@ import subprocess
 
 from datetime import datetime
 
-
+# Usage: main.py [OPTIONS] COMMAND [ARGS]...
+#
+# Options:
+#   -i, --input_path TEXT      Path to input image/directory.  [required]
+#   -o, --output_path TEXT     Path to output image/directory.  [default: tmp]
+#   -d, --denoiser TEXT        Denoiser type.  [default: grunet]
+#   denoiser, choices             [qrnn3d, qrnn3d_map, grunettv, grunet, drunet, ircnn, ffdnet, ffdnet3d, tv]
+#   -dp, --denoiser_path TEXT  Path to denoiser model.  [default:
+#                              ..\models\grunet.pth]
+#   -s, --solver [admm|hqs]    Solver type.  [default: admm]
+#   -sf INTEGER                scaling factor (nor requared)   [default: 2]
+#   -t TEXT                    Type of infer - with gt or no_gt - real superres
+#                              task   [default: with_gt]
+#   --device TEXT              Device to use.  [default: cuda]
+#   --help                     Show this message and exit.
+#
+# Commands:
+#   cs
+#   deblur
+#   inpaint
+#   misr
+# sisr
 #value = "-o timestamp -i C:\Users\1\PycharmProjects\DPHSIRmy\input\white_circ64,64,10)_cropped.mat  -sf 2  -t no_gt --device cpu   sisr -it 1" / >
 no_prefix_keys = ["sisr", "misr", "another_key"]
 

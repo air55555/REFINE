@@ -55,7 +55,7 @@ def run(task, ctx, iter, sigma, w, lam):
     parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))  # Get the parent directory
     if ctx.obj['output_path'] == 'timestamp':
         ctx.obj['output_path'] = parent_dir
-        ctx.obj['output_path'] += r'\out\\'
+        ctx.obj['output_path'] += r"\out\\"
         ctx.obj['output_path'] += datetime.now().strftime("%y%m%d_%H-%M-%S")
 
     cfg = munch.munchify(ctx.obj)

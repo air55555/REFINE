@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import torch
 import yaml
 import spectral
+from  metrics import calc_metrics
 
 
 from dphsir.denoisers import (FFDNet3DDenoiser, FFDNetDenoiser, QRNN3DDenoiser,
@@ -51,7 +52,8 @@ def get_params(cfg):
 
 
 def format(d): return ' '.join(['{}: {:.4f}'.format(k, v) for k, v in d.items()])
-
+VISUAL_CHANNEL = 9
+def hsi2rgb(x): return x[:, :, VISUAL_CHANNEL]
 
 def show_results(input, pred, gt, lowres,output_path=None, ):
     input = input.astype('float32')
@@ -61,8 +63,8 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     #in case for misr use only part of task.run return
     if isinstance(lowres, tuple): lowres=lowres[0]
 
-    VISUAL_CHANNEL = 9
-    def hsi2rgb(x): return x[:, :, VISUAL_CHANNEL]
+
+
     CMAP = 'gray'
     if output_path:
         print('-----------------------------------------------------')
@@ -89,6 +91,11 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     def eval(inp, gt):
         return {m.__name__: m(inp, gt) for m in metrics}
 
+    print("rmse,psnr,psnrb,ssim,msssim,uqi,ergas,scc,rase,sam,vifp")
+    metrics2= [f"{x:.5f}"  for x in calc_metrics(input,gt)]
+    print(metrics2)
+    metrics2 = [f"{x:.5f}" for x in calc_metrics(pred, gt)]
+    print(metrics2)
     before_eval = eval(input, gt)
     after_eval = eval(pred, gt)
     print('-----------------------------------------------------')
