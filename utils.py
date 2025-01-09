@@ -201,3 +201,97 @@ def synergize_hsi(datasets, align=True, method="average"):
         raise ValueError(f"Unsupported method: {method}")
 
     return synergized
+
+
+def read_log_file(file_path):
+    """
+    Reads the content of a log file and returns it as a string.
+
+    Args:
+        file_path (str): The path to the log file.
+
+    Returns:
+        str: The content of the log file as a string.
+    """
+    try:
+        with open(file_path, 'r') as file:
+            log_content = file.read()
+        return log_content
+    except FileNotFoundError:
+        print(f"Error: The file at {file_path} was not found.")
+        return None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+
+import csv
+
+
+def parse_log(log_text):
+    log_entries = []
+    entries = log_text.split('***************')
+
+    for entry in entries:
+        if "task:" in entry:
+            try:
+                # Extract task type
+                task = entry.split('task:')[1].split('\n')[0].strip()
+
+                # Extract parameters
+                params_start = entry.find('params:')
+                params_end = entry.find('solver:')
+                params = entry[params_start:params_end].strip().splitlines()
+
+                param_dict = {}
+                for param in params:
+                    if param.strip():
+                        key, value = param.split(':')
+                        param_dict[key.strip()] = value.strip()
+
+                # Extract the metrics before and after
+                if 'Before |' in entry and 'After |' in entry:
+                    before_metrics = entry.split('Before |')[1].split('After |')[0].strip()
+                    after_metrics = entry.split('After |')[1].strip()
+
+                    # Convert metrics to dictionary
+                    def extract_metrics(metrics_str):
+                        metrics = {}
+                        for line in metrics_str.splitlines():
+                            if line.strip():
+                                key, value = line.split(':')
+                                metrics[key.strip()] = float(value.strip())
+                        return metrics
+
+                    before_metrics = extract_metrics(before_metrics)
+                    after_metrics = extract_metrics(after_metrics)
+                else:
+                    # Default values if metrics are missing
+                    before_metrics = {}
+                    after_metrics = {}
+
+                # Store the parsed entry
+                log_entries.append({
+                    'task': task,
+                    **param_dict,
+                    **before_metrics,
+                    **after_metrics
+                })
+            except Exception as e:
+                print(f"Error parsing entry: {e}")
+                continue  # Skip to the next entry in case of an error
+
+    return log_entries
+
+
+def write_to_csv(log_entries, output_file):
+    # Define CSV headers based on the keys of the log entries
+    if log_entries:
+        headers = log_entries[0].keys()
+
+        # Write data to CSV file
+        with open(output_file, mode='w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+            writer.writerows(log_entries)
+        print(f"CSV file saved to {output_file}")
