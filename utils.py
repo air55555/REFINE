@@ -327,3 +327,73 @@ def write_to_csv(log_entries, output_file):
             writer.writeheader()
             writer.writerows(log_entries)
         print(f"CSV file saved to {output_file}")
+
+
+import numpy as np
+from sklearn.decomposition import PCA
+import spectral
+
+
+def reduce_bands_and_save_hsi_envi(data, target_bands=50, output_prefix="reduced_hsi"):
+    """
+    Processes hyperspectral data using six reduction methods and saves the results in ENVI format.
+
+    Parameters:
+    data (np.ndarray): Input HSI data of shape (rows, cols, bands).
+    target_bands (int): Number of bands to reduce to.
+    output_prefix (str): Prefix for output file names.
+
+    Saves:
+    ENVI files (.hdr and .dat) for each reduction method.
+    """
+    try:
+        # Validate input dimensions
+        if data.ndim != 3:
+            raise ValueError("Input data must have 3 dimensions (rows, cols, bands).")
+
+        rows, cols, bands = data.shape
+        print(f"Processing HSI data with dimensions: {rows} x {cols} x {bands}")
+
+        methods = ["mean", "max", "min", "median", "std", "pca"]
+
+        for method in methods:
+            if method == "pca":
+                # PCA Reduction
+                data_reshaped = data.reshape(-1, bands)
+                pca = PCA(n_components=target_bands)
+                reduced_data = pca.fit_transform(data_reshaped)
+                reduced_hsi = reduced_data.reshape(rows, cols, target_bands)
+            else:
+                # Aggregation-based methods
+                if bands % target_bands != 0:
+                    raise ValueError(
+                        f"Number of bands ({bands}) must be divisible by target bands ({target_bands}) for {method} method.")
+
+                group_size = bands // target_bands
+                reduced_hsi = np.zeros((rows, cols, target_bands))
+
+                for i in range(target_bands):
+                    start = i * group_size
+                    end = start + group_size
+                    if method == "mean":
+                        reduced_hsi[:, :, i] = np.mean(data[:, :, start:end], axis=2)
+                    elif method == "max":
+                        reduced_hsi[:, :, i] = np.max(data[:, :, start:end], axis=2)
+                    elif method == "min":
+                        reduced_hsi[:, :, i] = np.min(data[:, :, start:end], axis=2)
+                    elif method == "median":
+                        reduced_hsi[:, :, i] = np.median(data[:, :, start:end], axis=2)
+                    elif method == "std":
+                        reduced_hsi[:, :, i] = np.std(data[:, :, start:end], axis=2)
+
+            # Save the reduced data in ENVI format
+            output_file = f"{output_prefix}_{method}_{target_bands}bands"
+            spectral.envi.save_image(f"{output_file}.hdr", reduced_hsi, dtype=np.float32, interleave='bsq')
+            print(f"Saved {method} reduced data to ENVI format: {output_file}.hdr and {output_file}.dat")
+
+        print("Processing complete. All methods have been saved.")
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+
