@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 from scipy.ndimage import zoom
-
+from sklearn.decomposition import PCA
 
 def super_resolve_hsi(hsi_cube, scale_factor):
     """
@@ -228,6 +228,8 @@ def read_log_file(file_path):
 import csv
 
 
+import ast
+
 def parse_log(log_text):
     log_entries = []
     entries = log_text.split('***************')
@@ -246,29 +248,20 @@ def parse_log(log_text):
                 param_dict = {}
                 for param in params:
                     if param.strip():
-                        key, value = param.split(':')
+                        # Split only on the first colon
+                        key, value = param.split(':', 1)
                         param_dict[key.strip()] = value.strip()
 
                 # Extract the metrics before and after
+                before_metrics = {}
+                after_metrics = {}
                 if 'Before |' in entry and 'After |' in entry:
-                    before_metrics = entry.split('Before |')[1].split('After |')[0].strip()
-                    after_metrics = entry.split('After |')[1].strip()
+                    before_str = entry.split('Before |')[1].split('After |')[0].strip()
+                    after_str = entry.split('After |')[1].strip()
 
-                    # Convert metrics to dictionary
-                    def extract_metrics(metrics_str):
-                        metrics = {}
-                        for line in metrics_str.splitlines():
-                            if line.strip():
-                                key, value = line.split(':')
-                                metrics[key.strip()] = float(value.strip())
-                        return metrics
-
-                    before_metrics = extract_metrics(before_metrics)
-                    after_metrics = extract_metrics(after_metrics)
-                else:
-                    # Default values if metrics are missing
-                    before_metrics = {}
-                    after_metrics = {}
+                    # Convert string representations of dictionaries into actual dictionaries
+                    before_metrics = ast.literal_eval(before_str)
+                    after_metrics = ast.literal_eval(after_str)
 
                 # Store the parsed entry
                 log_entries.append({
@@ -282,6 +275,45 @@ def parse_log(log_text):
                 continue  # Skip to the next entry in case of an error
 
     return log_entries
+
+
+
+
+
+def reduce_hsi_bands_ndarray(data, n_bands=50):
+    """
+    Reduces the number of bands in a hyperspectral image stored in a NumPy ndarray.
+
+    Parameters:
+    data (np.ndarray): HSI data with shape (rows, cols, bands).
+    n_bands (int): Number of bands to reduce to.
+
+    Returns:
+    np.ndarray: HSI data reduced to the specified number of bands.
+    """
+    try:
+        # Validate input dimensions
+        if data.ndim != 3:
+            raise ValueError("Input data must have 3 dimensions (rows, cols, bands).")
+
+        rows, cols, bands = data.shape
+        print(f"Original dimensions: {rows} x {cols} x {bands}")
+
+        # Flatten spatial dimensions for PCA (reshape to [pixels, bands])
+        data_reshaped = data.reshape(-1, bands)
+
+        # Apply PCA for dimensionality reduction
+        pca = PCA(n_components=n_bands)
+        reduced_data = pca.fit_transform(data_reshaped)
+
+        # Reshape reduced data back to spatial dimensions
+        reduced_hsi = reduced_data.reshape(rows, cols, n_bands)
+        print(f"Reduced dimensions: {reduced_hsi.shape}")
+
+        return reduced_hsi
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 
 def write_to_csv(log_entries, output_file):

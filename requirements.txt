@@ -8,3 +8,4 @@ scikit-image
 scipy
 cvxpy
 hdf5storage
+#pip install scikit-learn

@@ -121,6 +121,7 @@ def restore(task, cfg):
 
     def run(input_path, output_path):
         data = loadmat(input_path)
+        data['gt'] = reduce_hsi_bands_ndarray(data['gt'], n_bands=50)
         gt = data['gt'].astype(np.float32)
         #one time run to save lehavim as envi
         #save_hsi_as(gt, "../../hsi_cheese/lehavim.hdr")
