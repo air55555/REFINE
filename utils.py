@@ -152,6 +152,7 @@ def read_hsi_files(file_paths):
 
     for file_path in file_paths:
         # Read the HSI data
+        print(file_path)
         hsi_data = load_hsi(file_path)
 
         # Verify that the data is 3D
@@ -333,6 +334,9 @@ import numpy as np
 from sklearn.decomposition import PCA
 import spectral
 
+import numpy as np
+from sklearn.decomposition import PCA
+import spectral
 
 def reduce_bands_and_save_hsi_envi(data, target_bands=50, output_prefix="reduced_hsi"):
     """
@@ -365,16 +369,15 @@ def reduce_bands_and_save_hsi_envi(data, target_bands=50, output_prefix="reduced
                 reduced_hsi = reduced_data.reshape(rows, cols, target_bands)
             else:
                 # Aggregation-based methods
-                if bands % target_bands != 0:
-                    raise ValueError(
-                        f"Number of bands ({bands}) must be divisible by target bands ({target_bands}) for {method} method.")
+                group_sizes = [bands // target_bands] * target_bands
+                for i in range(bands % target_bands):
+                    group_sizes[i] += 1
 
-                group_size = bands // target_bands
+                start = 0
                 reduced_hsi = np.zeros((rows, cols, target_bands))
 
                 for i in range(target_bands):
-                    start = i * group_size
-                    end = start + group_size
+                    end = start + group_sizes[i]
                     if method == "mean":
                         reduced_hsi[:, :, i] = np.mean(data[:, :, start:end], axis=2)
                     elif method == "max":
@@ -385,6 +388,7 @@ def reduce_bands_and_save_hsi_envi(data, target_bands=50, output_prefix="reduced
                         reduced_hsi[:, :, i] = np.median(data[:, :, start:end], axis=2)
                     elif method == "std":
                         reduced_hsi[:, :, i] = np.std(data[:, :, start:end], axis=2)
+                    start = end
 
             # Save the reduced data in ENVI format
             output_file = f"{output_prefix}_{method}_{target_bands}bands"
