@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from scipy.ndimage import zoom
 from sklearn.decomposition import PCA
+import os
 
 def super_resolve_hsi(hsi_cube, scale_factor):
     """
@@ -400,4 +401,26 @@ def reduce_bands_and_save_hsi_envi(data, target_bands=50, output_prefix="reduced
     except Exception as e:
         print(f"Error: {e}")
 
+from scipy.io import savemat
+def envi_to_matlab(envi_file, mat_file=None):
+    """
+    Convert an ENVI file to a MATLAB .mat file.
+
+    Parameters:
+        envi_file (str): Path to the input ENVI file (with associated .hdr file).
+        mat_file (str): Path to the output MATLAB .mat file.
+    """
+    # Open the ENVI file
+    envi_data = open_image(envi_file)
+
+    # Read the data into a NumPy array
+    array = envi_data.load()  # Loads the full hyperspectral cube into memory
+
+    # Save the array as a MATLAB .mat file with the variable name 'gt'
+    base, ext = os.path.splitext(envi_file)
+    if not mat_file:
+        mat_file = f"{base}.mat"
+    savemat(mat_file, {'gt': array})
+
+    print(f"ENVI file '{envi_file}' successfully saved as MATLAB file '{mat_file}'.")
 
