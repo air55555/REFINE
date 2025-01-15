@@ -57,7 +57,8 @@ def run_scripts(script_paths, base_params, param_variants):
 if __name__ == "__main__":
     # Paths to Python scripts
     script_paths = [
-        "C:/Users/1/PycharmProjects/DPHSIRmy/cli/main.py",  # Replace with your script filenames
+        r"D:\PycharmProjects\DPHSIRmy\cli\main.py"
+        #"C:/Users/1/PycharmProjects/DPHSIRmy/cli/main.py",  # Replace with your script filenames
         #"C:/Users/1/PycharmProjects/DPHSIRmy/cli/main.py",
     ]
     # Common parameters for all scripts
@@ -66,12 +67,18 @@ if __name__ == "__main__":
     base_params = r"-o timestamp -i C:\Users\1\PycharmProjects\DPHSIRmy\input" \
                   r"\31bands_(512,512,31)_downsampled_sf8.mat" \
                   r" -t no_gt --device cpu "
+    base_params = r"-i D:\PycharmProjects\DPHSIRmy\input\synergy(256,256,88).mat " \
+                  r"-sf 2  -o timestamp deblur "
+                  #sisr
+
 
     # Parameter variants
     param_variants = [
-        {"sf": 2, "sisr": "sisr" , "it": 1 },
-        {"sf": 2, "misr": "misr" , "it": 1 },
+        { "it": 1 },
+        { "it": 2 },
     ]
+    param_variants = [{"it": i} for i in range(1, 50)]
+
     with open(r'..\log.txt', "a") as file:
         batch = datetime.now().strftime("%y%m%d_%H-%M-%S")
         file.write(f"---batch{batch}\n")

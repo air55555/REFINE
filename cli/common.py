@@ -102,6 +102,7 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     print('Before |', format(before_eval))
     print(' After |', format(after_eval))
     with open(r'..\log.txt', "a") as file:
+        file.write(f'GT: {gt.shape}\n')
         file.write(f'Before | {before_eval}\n')
         file.write(f' After | {after_eval}\n')
         file.write(f'{metrics_str}\n')
@@ -125,6 +126,7 @@ def restore(task, cfg):
     def run(input_path, output_path):
         data = loadmat(input_path)
         #data['gt'] = reduce_hsi_bands_ndarray(data['gt'], n_bands=50)
+        #data['gt'] = reduce_hsi_bands_ndarray(data['gt'], n_bands=85)
         gt = data['gt'].astype(np.float32)
         #one time run to save lehavim as envi
         #save_hsi_as(gt, "../../hsi_cheese/lehavim.hdr")
