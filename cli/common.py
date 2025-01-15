@@ -90,12 +90,12 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
 
     def eval(inp, gt):
         return {m.__name__: m(inp, gt) for m in metrics}
-
-    print("rmse,psnr,psnrb,ssim,msssim,uqi,ergas,scc,rase,sam,vifp")
-    metrics2= [f"{x:.5f}"  for x in calc_metrics(input,gt)]
-    print(metrics2)
-    metrics2 = [f"{x:.5f}" for x in calc_metrics(pred, gt)]
-    print(metrics2)
+    metrics_str="rmse,psnr,psnrb,ssim,msssim,uqi,ergas,scc,rase,sam,vifp"
+    print(metrics_str)
+    metrics_before= [f"{x:.5f}"  for x in calc_metrics(input,gt)]
+    print(metrics_before)
+    metrics_after = [f"{x:.5f}" for x in calc_metrics(pred, gt)]
+    print(metrics_after)
     before_eval = eval(input, gt)
     after_eval = eval(pred, gt)
     print('-----------------------------------------------------')
@@ -104,6 +104,9 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
     with open(r'..\log.txt', "a") as file:
         file.write(f'Before | {before_eval}\n')
         file.write(f' After | {after_eval}\n')
+        file.write(f'{metrics_str}\n')
+        file.write(f'metrics before  | {metrics_before}\n')
+        file.write(f'metrics after  | {metrics_after}\n')
     return eval(pred, gt)
 
 
@@ -121,7 +124,7 @@ def restore(task, cfg):
 
     def run(input_path, output_path):
         data = loadmat(input_path)
-        data['gt'] = reduce_hsi_bands_ndarray(data['gt'], n_bands=50)
+        #data['gt'] = reduce_hsi_bands_ndarray(data['gt'], n_bands=50)
         gt = data['gt'].astype(np.float32)
         #one time run to save lehavim as envi
         #save_hsi_as(gt, "../../hsi_cheese/lehavim.hdr")
