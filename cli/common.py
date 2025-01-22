@@ -81,7 +81,7 @@ def show_results(input, pred, gt, lowres,output_path=None, ):
             plt.imsave(output_path/'pred.png', hsi2rgb(pred), cmap=CMAP)
             spectral.envi.save_image(output_path/'input.hdr', input, dtype='float32', force=True)
             spectral.envi.save_image(output_path / 'pred.hdr', pred, dtype='float32', force=True)
-
+            envi_to_matlab(output_path / 'pred.hdr')
     else:
         img = [hsi2rgb(i) for i in [input, pred, gt]]
         plt.imshow(np.hstack(img), cmap=CMAP)

@@ -1,8 +1,9 @@
 import click
 import munch
-
-import task
 import os
+print(os.getcwd())
+import task
+
 from datetime import datetime
 from common import restore
 gpu_id ="2"

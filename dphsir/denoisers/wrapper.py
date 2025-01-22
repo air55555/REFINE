@@ -73,7 +73,7 @@ class IRCNNDenoiser(Denoiser2D):
         self.former_idx = 0
 
     def denoise_2d(self, x, sigma):
-        current_idx = np.int(np.ceil(sigma.cpu().numpy()*255./2.)-1)
+        current_idx = int(np.ceil(sigma.cpu().numpy()*255./2.)-1)
 
         if current_idx != self.former_idx:
             self.model.load_state_dict(

@@ -23,7 +23,7 @@ from datetime import datetime
 #   deblur
 #   inpaint
 #   misr
-# sisr
+#   sisr
 #value = "-o timestamp -i C:\Users\1\PycharmProjects\DPHSIRmy\input\white_circ64,64,10)_cropped.mat  -sf 2  -t no_gt --device cpu   sisr -it 1" / >
 no_prefix_keys = ["sisr", "misr", "another_key"]
 
@@ -68,7 +68,8 @@ if __name__ == "__main__":
                   r"\31bands_(512,512,31)_downsampled_sf8.mat" \
                   r" -t no_gt --device cpu "
     base_params = r"-i D:\PycharmProjects\DPHSIRmy\input\synergy(256,256,88).mat " \
-                  r"-sf 2  -o timestamp deblur "
+                  r"-sf 4 -d tv" \
+                  r"    -o timestamp sisr "
                   #sisr
 
 

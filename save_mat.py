@@ -28,7 +28,7 @@ def envi_to_matlab(envi_file, mat_file=None):
 
 
 # Example usage
-envi_file = r'C:\Users\1\PycharmProjects\DPHSIRmy\input\64_10_circ_t_cropped.hdr'
+envi_file = r'D:\PycharmProjects\DPHSIRmy\out\250120_11-51-17\pred.hdr'
 # Path to the ENVI file
-mat_file = "output_data.mat"  # Path to the MATLAB .mat file
-envi_to_matlab(envi_file)
+mat_file = "512_88_sr.mat"  # Path to the MATLAB .mat file
+envi_to_matlab(envi_file,mat_file)

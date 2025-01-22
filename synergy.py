@@ -8,6 +8,7 @@ fl=[r"C:\Users\1\PycharmProjects\hsi_cheese\reduced_hsi_max_88bands.hdr",
     r"C:\Users\1\PycharmProjects\hsi_cheese\reduced_hsi_std_88bands.hdr",
     r"C:\Users\1\PycharmProjects\hsi_cheese\reduced_hsi_min_88bands.hdr",
 ]
+250116_17-42-40
 CMAP ='brg'
 hsi_combined = synergize_hsi(read_hsi_files(fl),align=False)
 #normalize
