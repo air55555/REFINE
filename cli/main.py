@@ -9,7 +9,8 @@ from common import restore
 gpu_id ="2"
 os.environ['CUDA_VISIBLE_DEVICES'] = gpu_id
 print('export CUDA_VISIBLE_DEVICES=' + gpu_id)
-
+#for debug running in win bat
+print(os.environ['PYTHONPATH'])
 def add_options(options):
     def _add_options(func):
         for option in reversed(options):

@@ -11,7 +11,7 @@ class ProgressBar:
         iter_time = 1/(self.pbar.format_dict['rate']) # calculate it/s as 1/rate
         self.iter_times.append(iter_time)
 
-    def close(self):
+    def all_close(self):
         """
         Closes the progress bar and logs the final progress state to a file.
         """

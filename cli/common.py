@@ -1,14 +1,9 @@
 import os
 from pathlib import Path
-
 import matplotlib.pyplot as plt
-
 import torch
 import yaml
 import spectral
-from  metrics import calc_metrics
-
-
 from dphsir.denoisers import (FFDNet3DDenoiser, FFDNetDenoiser, QRNN3DDenoiser,
                               TVDenoiser, GRUNetDenoiser, IRCNNDenoiser,
                               DRUNetDenoiser, GRUNetTVDenoiser)
@@ -16,7 +11,11 @@ from dphsir.solvers import callbacks
 from dphsir.solvers.params import admm_log_descent
 from dphsir.metrics import mpsnr, mssim, sam, ergas
 from dphsir.utils.io import loadmat
-from utils import *
+import sys
+#
+#sys.path.append(r'D:\PycharmProjects\DPHSIRmy\etc')
+from etc.deep_metrics import calc_metrics
+from etc.utils import  *
 
 def get_denoiser(cfg):
     if cfg.type.startswith('qrnn3d'):
@@ -144,7 +143,8 @@ def restore(task, cfg):
         pred = solver.restore(input, iter_num=iter, rhos=rhos, sigmas=sigmas,
                               callbacks=[pb])
         #write totals to log etc.
-        pb.close()
+
+        pb.all_close()
 
         #if cfg.t == 'no_gt':
         #    input = restore_hsi(gt,cfg.sf)

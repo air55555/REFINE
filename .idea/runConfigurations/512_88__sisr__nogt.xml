@@ -23,7 +23,7 @@
       </ENTRIES>
     </EXTENSION>
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cli/main.py" />
-    <option name="PARAMETERS" value="-t no_gt --device cuda -o timestamp -i d:\PycharmProjects\DPHSIRmy\input\synergy(256,256,88).mat -sf 2 -d grunettv -s admm sisr -it 30" />
+    <option name="PARAMETERS" value="-t no_gt --device cuda -o timestamp -i d:\PycharmProjects\DPHSIRmy\input\synergy(256,256,88).mat -sf 2 -d grunettv -s hqs sisr -it 20" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
