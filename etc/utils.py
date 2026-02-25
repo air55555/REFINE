@@ -94,6 +94,65 @@ def generate_rgb(hsi_cube,rb,gb,bb):
     return np.stack((r_band, g_band, b_band), axis=2)
 
 
+def crop_hsi(hsi_cube, target_rows, target_cols, mode="center"):
+    """
+    Spatially crop a hyperspectral cube to the desired spatial size.
+
+    Parameters
+    ----------
+    hsi_cube : np.ndarray
+        Input HSI data of shape (rows, cols, bands).
+    target_rows : int
+        Desired number of rows in the cropped cube.
+    target_cols : int
+        Desired number of columns in the cropped cube.
+    mode : str, optional
+        Cropping mode. Supported:
+        - "center": take a centered crop.
+        - "topleft": take a crop starting at (0, 0).
+
+    Returns
+    -------
+    np.ndarray
+        Cropped HSI cube of shape (target_rows, target_cols, bands).
+
+    Notes
+    -----
+    Example: crop from (500, 500, B) to (50, 50, B):
+        cropped = crop_hsi(hsi_cube, 50, 50, mode="center")
+    """
+    if not isinstance(hsi_cube, np.ndarray):
+        raise TypeError("hsi_cube must be a NumPy array.")
+
+    if hsi_cube.ndim != 3:
+        raise ValueError("hsi_cube must have 3 dimensions (rows, cols, bands).")
+
+    rows, cols, bands = hsi_cube.shape
+
+    if target_rows <= 0 or target_cols <= 0:
+        raise ValueError("target_rows and target_cols must be positive integers.")
+
+    if target_rows > rows or target_cols > cols:
+        raise ValueError(
+            f"Target size ({target_rows}, {target_cols}) is larger than input size ({rows}, {cols})."
+        )
+
+    if mode not in ("center", "topleft"):
+        raise ValueError('mode must be either "center" or "topleft".')
+
+    if mode == "center":
+        start_row = (rows - target_rows) // 2
+        start_col = (cols - target_cols) // 2
+    else:  # "topleft"
+        start_row = 0
+        start_col = 0
+
+    end_row = start_row + target_rows
+    end_col = start_col + target_cols
+
+    return hsi_cube[start_row:end_row, start_col:end_col, :]
+
+
 
 def create_header_from_cube(hsi_cube):
     """

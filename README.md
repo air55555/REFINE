@@ -44,6 +44,24 @@ python cli/main.py -i [input_path] [task]
 python playgrounds/deblur.py
 ```
 
+## Crop hyperspectral cubes (e.g., 500×500 → 50×50)
+
+- **Function**: `crop_hsi` in `etc/utils.py`
+- **Use case**: crop spatial dimensions of a cube from e.g. `(500, 500, B)` to `(50, 50, B)` while keeping all bands.
+
+```python
+from etc.utils import load_hsi, save_hsi_as, crop_hsi
+
+# Load ENVI HSI cube
+hsi = load_hsi(r"path\to\input.hdr")  # associated .img/.dat must be present
+
+# Center crop from 500x500 to 50x50 (all bands kept)
+hsi_50 = crop_hsi(hsi, 50, 50, mode="center")  # or mode="topleft"
+
+# Save the cropped cube as a new ENVI file
+save_hsi_as(hsi_50, r"path\to\output_50x50.hdr")
+```
+
 ## Citation
 
 If you find our work useful for your research, please consider citing our paper :)
